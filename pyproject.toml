@@ -3,11 +3,12 @@ name = "fly-in"
 version = "1.4"
 description = "Efficient drone fleet routing simulator under constraints."
 readme = "README.md"
-requires-python = ">=3.10"
+requires-python = ">=3.13"
 dependencies = [
     "arcade>=3.3.3",
     "colorama>=0.4.6",
     "pydantic>=2.13.4",
+    "pyglet>=2.1.15",
     "types-colorama>=0.4.15.20260508",
     "webcolors>=25.10.0",
 ]
@@ -16,6 +17,8 @@ dependencies = [
 dev = [
     "mypy>=1.20.1",
     "pytest>=9.0.3",
+    "ruff>=0.15.20",
+    "ty>=0.0.55",
 ]
 
 [tool.pytest.ini_options]
