@@ -37,27 +37,19 @@
               freetype
               fontconfig
             ];
-            # zLibs = with pkgs; [
-            #   zlib
-            # ];
-            # bsdLibs = with pkgs; [
-            #   libbsd
-            # ];
           in
           pkgs.mkShellNoCC {
             packages = [
               pkgs.python313
               pkgs.uv
-              pkgs.ruff
+              # pkgs.ruff
             ]
             ++ glLibs
             ++ x11Libs
             ++ fontLibs;
-            # ++ zLibs
-            # ++ bsdLibs;
             env = {
               LD_LIBRARY_PATH = pkgs.lib.makeLibraryPath (
-                [ pkgs.stdenv.cc.cc.lib ] ++ glLibs ++ x11Libs ++ fontLibs # ++ zLibs ++ bsdLibs
+                [ pkgs.stdenv.cc.cc.lib ] ++ glLibs ++ x11Libs ++ fontLibs
               );
               UV_PYTHON_DOWNLOADS = "never";
               UV_PYTHON = "${pkgs.python313}/bin/python3.13";

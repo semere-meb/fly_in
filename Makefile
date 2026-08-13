@@ -1,18 +1,30 @@
-STUBS_DIR := stubs
-TEST_DIR := tests
+SRC :=  drone_sprite.py \
+	engine.py \
+	errors.py \
+	graph.py \
+	main.py \
+	models.py \
+	parser.py \
+	pathfinder.py \
+	scheduler.py \
+	visualizer.py \
+	stubs/webcolors.pyi \
 
-SRC :=  *.py
 VENV := .venv
+MYPY_OPTIONS := --warn-return-any \
+	--warn-unused-ignores \
+	--ignore-missing-imports \
+	--disallow-untyped-defs \
+	--check-untyped-defs
 
 run: install
-	uv run python main.py
+	uv run python -m main -m maps/challenger/01_the_impossible_dream.txt
 
 install: $(VENV)
 
 $(VENV): pyproject.toml uv.lock
-	pipx install uv || pip install uv
-	uv venv --python 3.13
-	uv sync
+	uv sync || pip install uv && uv sync
+	ruff --version || pip install ruff
 
 clean:
 	find . -type d -name "__pycache__" -exec rm -rf {} +
@@ -20,36 +32,19 @@ clean:
 	rm -rf .ruff_cache
 	rm -rf .pytest_cache
 
-fclean: clean
-	uv cache clean
-	rm -rf $(VENV)
-
 lint: $(VENV)
-	uvx ruff check $(SRC) $(STUBS_DIR)
-	uvx flake8 $(SRC) $(STUBS_DIR)
-	uv run mypy $(SRC) \
-	--warn-return-any \
-	--warn-unused-ignores \
-	--ignore-missing-imports \
-	--disallow-untyped-defs \
-	--check-untyped-defs
-
-lint-strict: $(VENV)
-	uvx ruff check $(SRC) $(STUBS_DIR)
-	uvx flake8 $(SRC) $(STUBS_DIR)
-	uv run mypy $(SRC) --strict
+	uvx ruff check $(SRC)
+	uv run mypy $(SRC) $(MYPY_OPTIONS) --strict
 
 test: $(VENV)
 	uv run pytest
 
 format:
-	uvx ruff format $(SRC) $(STUB_DIR) $(TEST_DIR)
+	uvx ruff format $(SRC)
 
 debug: $(VENV)
-	uv run python -m pdb main.py -m maps/medium/03_priority_puzzle.txt
+	uv run python -m pdb main.py -m maps/easy/03_basic_capacity.txt
 
 re: clean install
 
-fre: fclean install
-
-.PHONY: install run clean lint lint-strict debug re reset-env test
+.PHONY: install run clean lint debug re test
